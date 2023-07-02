@@ -1,4 +1,5 @@
 ﻿using ASPWebTest.Models;
+using ASPWebTest.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -17,6 +18,7 @@ namespace ASPWebTest.Controllers
         {
             return View();
         }
+
 
         public IActionResult Privacy()
         {

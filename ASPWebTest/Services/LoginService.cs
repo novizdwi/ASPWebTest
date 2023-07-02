@@ -10,7 +10,11 @@ namespace ASPWebTest.Services
 {
     public class LoginService: BaseService
     {
-        public LoginService(ApplicationDbContext db) { }
+        private readonly ApplicationDbContext db;
+        public LoginService(ApplicationDbContext db) {
+            this.db = db; 
+        }
+
         public async Task<LoginOperation> Register(RegisterViewModel viewModel)
         {
             try 

@@ -6,7 +6,10 @@ namespace ASPWebTest.Services
 {
     public class OfficeService : BaseService
     {
-        public OfficeService(ApplicationDbContext db) { }
+        private readonly ApplicationDbContext db;
+        public OfficeService(ApplicationDbContext db) { 
+            this.db = db; 
+        }
 
         public List<Office> GetAll(string searchText)
         {
