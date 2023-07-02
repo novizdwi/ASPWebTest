@@ -1,5 +1,6 @@
 ﻿using ASPWebTest.Models;
 using ASPWebTest.Services;
+using ASPWebTest.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASPWebTest.Controllers
@@ -13,9 +14,10 @@ namespace ASPWebTest.Controllers
         }
 
 
-        public IActionResult Index( )
+        public IActionResult Index(string searchText = null)
         {
-            return View();
+            var viewModel = officeService.GetAll(searchText);
+            return View(viewModel);
         }
     }
 }

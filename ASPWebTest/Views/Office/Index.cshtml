@@ -1,6 +1,15 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+﻿@Model List<Office>
+@{
+    ViewData["Title"] = "Office";
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+    <form method="post" asp-controller="Office" asp-action="Index">
+        <div class="form-actions no-color">
+            <p>
+                Search :
+                <input type="text" name="SearchString" value="@Model.CurrentFilter" /> &nbsp;
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </p>
+        </div>
+    </form>

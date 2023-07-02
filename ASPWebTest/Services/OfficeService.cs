@@ -11,7 +11,7 @@ namespace ASPWebTest.Services
             this.db = db; 
         }
 
-        public List<Office> GetAll(string searchText)
+        public List<OfficeViewModel> GetAll(string searchText = null)
         {
             IQueryable<Office> query = db.Offices.AsQueryable();
             if (!string.IsNullOrEmpty(searchText))
@@ -20,7 +20,18 @@ namespace ASPWebTest.Services
                 || x.OfficeName.Contains(searchText)
                 );
             }
-            return query.ToList();
+            var ret = (from T0 in query select new OfficeViewModel() { 
+                Id = T0.Id,
+                OfficeCode = T0.OfficeCode,
+                OfficeName = T0.OfficeName,
+                Address1 = T0.Address1,
+                Address2 = T0.Address2,
+                City = T0.City,
+                Phone = T0.Phone,
+                Fax = T0.Fax,
+            }).ToList();
+
+            return ret;
         }
         public Office GetById(int id)
         {

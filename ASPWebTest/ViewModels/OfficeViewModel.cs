@@ -18,5 +18,6 @@ namespace ASPWebTest.ViewModels
         public string? City { get; set; }
         public string? Phone { get; set; }
         public string? Fax { get; set; }
+        public string? CurrentFilter { get; set; }
     }
 }
