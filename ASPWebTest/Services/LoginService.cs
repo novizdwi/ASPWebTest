@@ -112,6 +112,18 @@ namespace ASPWebTest.Services
             return LoginOperation.Failed("Account Name Empty");
         }
 
+        public List<MenuRegisterViewModel> GetMenuRegister()
+        {
+            var ret = (from T0 in db.Menus
+                       select new MenuRegisterViewModel()
+                       {
+                           MenuId= T0.Id,
+                           MenuName = T0.MenuName,
+
+                       });
+            return ret.ToList();
+        }
+
         public static String sha256_hash(string value)
         {
             StringBuilder Sb = new StringBuilder();

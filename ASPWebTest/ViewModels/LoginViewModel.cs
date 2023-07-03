@@ -17,4 +17,16 @@ namespace ASPWebTest.ViewModels
         public int? UserAccountId { get; set; }
         public string? AccountName { get; set; }
     }
+
+    public class MenuRegisterViewModel
+    {
+        public int? MenuId { get; set; }
+        public string? MenuName { get; set; }
+        public bool CanRead { get; set; }
+        public bool CanCreate { get; set; }
+        public bool CanUpdate { get; set; }
+        public bool CanDelete { get; set; }
+    }
+
+
 }

@@ -1,0 +1,57 @@
+﻿@model List<ASPWebTest.ViewModels.MenuRegisterViewModel>
+@{
+    ViewData["Title"] = "Menu Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+        <span class="text-danger mb-3">
+        @Html.Raw(ViewBag.Message)
+        </span>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form action="Menu" method="POST" role="form" class="form-horizontal">
+            <div class="form-group pt-3">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>Menu Name</td>
+                            <td>Read</td>
+                            <td>Create</td>
+                            <td>Update</td>
+                            <td>Delete</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.HiddenFor(modelItem => item.MenuName)
+                                    @Html.DisplayFor(modelItem => item.MenuName)
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(modelItem => item.CanRead)
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(modelItem => item.CanCreate)
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(modelItem => item.CanUpdate)
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(modelItem => item.CanDelete)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group pt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

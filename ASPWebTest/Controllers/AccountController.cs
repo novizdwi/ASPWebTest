@@ -36,7 +36,7 @@ namespace ASPWebTest.Controllers
                 var result = await loginService.Login(viewModel);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index","Home");
                 }
                 ViewBag.Message = result.errors;
 
@@ -78,7 +78,7 @@ namespace ASPWebTest.Controllers
                     var result = await loginService.Register(viewModel);
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Menu");
                     }
                 }
 
@@ -92,5 +92,30 @@ namespace ASPWebTest.Controllers
             }
             return View(viewModel);
         }
+
+        public IActionResult Menu()
+        {
+            var viewModel = loginService.GetMenuRegister();
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Menu(LoginViewModel viewModel)
+        {
+            var success = false;
+            var msg = "";
+            if (ModelState.IsValid)
+            {
+                var result = await loginService.Login(viewModel);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                ViewBag.Message = result.errors;
+
+            }
+            return View(viewModel);
+        }
+
     }
 }
