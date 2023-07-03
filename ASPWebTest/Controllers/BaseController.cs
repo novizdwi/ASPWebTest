@@ -1,5 +1,7 @@
 ﻿using ASPWebTest.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace ASPWebTest.Controllers
 {
@@ -10,7 +12,9 @@ namespace ASPWebTest.Controllers
         public BaseController(ApplicationDbContext db) {
             this.db = db;
         }
-
+        protected string GetLoggedUser() {
+            return ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name).Value;
+        }
 
         protected List<object> GetModelStateError()
         {

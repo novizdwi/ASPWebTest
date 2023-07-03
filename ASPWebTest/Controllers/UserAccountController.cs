@@ -1,10 +1,12 @@
 ﻿using ASPWebTest.Models;
 using ASPWebTest.Services;
 using ASPWebTest.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASPWebTest.Controllers
 {
+    [Authorize]
     public class UserAccountController : BaseController
     {
         private UserAccountService userAccountService;

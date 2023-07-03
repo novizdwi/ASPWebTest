@@ -2,6 +2,7 @@
 using ASPWebTest.Services;
 using System.Threading.Tasks;
 using ASPWebTest.Models;
+using ASPWebTest.ViewModels;
 
 namespace ASPWebTest.ViewComponents
 {
@@ -16,7 +17,9 @@ namespace ASPWebTest.ViewComponents
 
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
-			var items = await menuService.GetMenu();
+			List<MenuViewModel> items = new List<MenuViewModel>();
+
+            items = await menuService.GetMenu();
 			return View(items);
 		}
 	}

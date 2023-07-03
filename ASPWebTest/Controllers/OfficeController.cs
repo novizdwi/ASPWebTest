@@ -1,10 +1,13 @@
 ﻿using ASPWebTest.Models;
 using ASPWebTest.Services;
 using ASPWebTest.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ASPWebTest.Controllers
 {
+    [Authorize]
     public class OfficeController : BaseController
     {
         private OfficeService officeService;
@@ -17,6 +20,7 @@ namespace ASPWebTest.Controllers
 
         public IActionResult Index(string SearchString = null)
         {
+            
             OfficeViewModel viewModel = new OfficeViewModel();
             viewModel.SearchText = SearchString;
             viewModel.Offices = officeService.GetAll(SearchString);

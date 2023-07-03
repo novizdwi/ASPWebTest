@@ -1,7 +1,11 @@
 ﻿using ASPWebTest.Models;
 using ASPWebTest.Services;
 using ASPWebTest.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ASPWebTest.Controllers
 {
@@ -36,6 +40,17 @@ namespace ASPWebTest.Controllers
                 var result = await loginService.Login(viewModel);
                 if (result.Succeeded)
                 {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, result.AccountId.ToString())
+                    };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity
+                    var principal = new ClaimsPrincipal(identity);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        principal, new AuthenticationProperties());
+
+
                     return RedirectToAction("Index","Home");
                 }
                 ViewBag.Message = result.errors;
@@ -78,6 +93,17 @@ namespace ASPWebTest.Controllers
                     var result = await loginService.Register(viewModel);
                     if (result.Succeeded)
                     {
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, result.AccountId.ToString()),
+                            new Claim(ClaimTypes.Name, result.UserName)
+                        };
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity
+                        var principal = new ClaimsPrincipal(identity);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                            principal, new AuthenticationProperties());
+
                         return RedirectToAction("Menu");
                     }
                 }
@@ -116,6 +142,12 @@ namespace ASPWebTest.Controllers
             }
             return View(viewModel);
         }
-
+        public async Task<IActionResult> LogOut()
+        {
+            //SignOutAsync is Extension method for SignOut
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //Redirect to home page
+            return LocalRedirect("/");
+        }
     }
 }

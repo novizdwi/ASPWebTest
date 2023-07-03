@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ASPWebTest.Models;
 using ASPWebTest.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +16,11 @@ builder.Services.AddScoped<LoginService, LoginService>();
 builder.Services.AddScoped<OfficeService, OfficeService>();
 builder.Services.AddScoped<UserAccountService, UserAccountService>();
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(x => x.LoginPath = "/");
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
