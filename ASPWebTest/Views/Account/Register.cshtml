@@ -1,0 +1,54 @@
+﻿@model ASPWebTest.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <span class="text-danger mb-3">
+        @Html.Raw(ViewBag.Message)
+    </span>
+}
+<div class="row">
+    <div class="col-md-6">
+        <form action="Register" method="POST" role="form" class="form-horizontal">
+            <div class="form-group">
+                <label asp-for="AccountName" class="control-label"></label>
+                <input asp-for="AccountName" class="form-control" />
+                <span asp-validation-for="AccountName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                @Html.ListBoxFor(m => m.RoleIds, Model.Roles, new { @class = "listbox" })
+
+            </div>
+
+            <div class="form-group pt-3">
+                <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    // A $( document ).ready() block.
+    $(document).ready(function () {
+        document.getElementById("RoleIds").selectedIndex = 1;
+    });
+
+
+</script>

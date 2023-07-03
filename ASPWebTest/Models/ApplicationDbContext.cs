@@ -14,6 +14,7 @@ namespace ASPWebTest.Models
 
         }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<AccountRole> AccountRoles { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<MenuAuth> MenuAuths { get; set; }
         public DbSet<Office> Offices { get; set; }

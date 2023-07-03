@@ -14,6 +14,19 @@ namespace ASPWebTest.Services
         public LoginService(ApplicationDbContext db) {
             this.db = db; 
         }
+        public int CekExist(RegisterViewModel model)
+        {
+            IQueryable<Account> data = db.Accounts.AsQueryable();
+            if (data.Any())
+            {
+                data = data.Where(x => x.AccountName == model.AccountName);
+            }
+            else
+            {
+                return 0;
+            }
+            return data.Count() == 0 ? 0 : 1;
+        }
 
         public async Task<LoginOperation> Register(RegisterViewModel viewModel)
         {
@@ -43,11 +56,26 @@ namespace ASPWebTest.Services
                         {
                             AccountId = account.Id,
                             CreatedDate = DateTime.Now,
-                            CreatedUser = 1,
+                            CreatedUser = account.Id,
                         };
 
                         db.UserAccounts.Add(userAccount);
                         await db.SaveChangesAsync();
+
+                        foreach (var item in viewModel.RoleIds)
+                        {
+                            var accountRoles = new AccountRole()
+                            {
+                                AccountId = account.Id,
+                                RoleId = item,
+                                IsActive = true,
+                                CreatedDate = DateTime.Now,
+                                CreatedUser = account.Id,
+                            };
+                            db.AccountRoles.Add(accountRoles);
+                            await db.SaveChangesAsync();
+                        }
+
 
                         scope.Complete();
                         return LoginOperation.Success(account.Id, userAccount.Id, account.AccountName);

@@ -1,4 +1,5 @@
 ﻿using ASPWebTest.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Transactions;
 
 namespace ASPWebTest.Services
@@ -23,6 +24,17 @@ namespace ASPWebTest.Services
 
             return query.ToList();
         }
+        public List<SelectListItem> GetAllSelectList()
+        {
+            var firstId = db.Roles.Select(x => x.Id).FirstOrDefault();
+            var ret = (from T0 in db.Roles
+                       select new SelectListItem() { 
+                       Value = T0.Id.ToString(),
+                       Text = T0.RoleName,
+                       Selected = (T0.Id == firstId)
+                       });
+            return ret.ToList();
+        }
         public Role GetById(int id)
         {
             var query = db.Roles.Where(x => x.Id == id).FirstOrDefault();
@@ -32,6 +44,12 @@ namespace ASPWebTest.Services
             }
 
             return query;
+        }
+
+        public int GetFirst()
+        {
+            int query = db.Roles.Select(x=>x.Id).FirstOrDefault() ?? 0;
+            return  query;
         }
 
 

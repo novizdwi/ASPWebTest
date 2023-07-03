@@ -1,16 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using ASPWebTest.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 
-namespace ASPWebTest.Models
+namespace ASPWebTest.ViewModels
 {
-    [Table("UserAccount")]
-    public class UserAccount:BaseModel
+    public class UsersViewModel: BaseModel
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int? Id { get; set; }
         public int? AccountId { get; set; }
-        [ DisplayName("First Name")]
+        [DisplayName("First Name")]
         public string? FirstName { get; set; }
         [DisplayName("Middle Name")]
         public string? MidleName { get; set; }
@@ -24,6 +22,6 @@ namespace ASPWebTest.Models
         public string? Address2 { get; set; }
         public string? City { get; set; }
         public int? OfficeId { get; set; }
-
+        public string? OfficeName { get; set; }
     }
 }

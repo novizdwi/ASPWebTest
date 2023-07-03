@@ -7,7 +7,7 @@ namespace ASPWebTest.ViewModels
     {
         [Required, DisplayName("Account Name")]
         public string? AccountName { get; set; }
-        [Required, DisplayName("Password")]
+        [Required, DataType(DataType.Password), DisplayName("Password")]
         public string? Password { get; set; }
     }
 
