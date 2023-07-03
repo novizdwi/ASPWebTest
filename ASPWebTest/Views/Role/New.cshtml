@@ -1,0 +1,39 @@
+﻿@model Role
+@{
+    ViewData["Title"] = "New Role";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <span class="text-danger mb-3">
+        @Html.Raw(ViewBag.Message)
+    </span>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form action="New" method="POST" role="form" class="form-horizontal">
+
+            <div class="form-group">
+                <label asp-for="RoleName" class="control-label"></label>
+                <input asp-for="RoleName" class="form-control" />
+                <span asp-validation-for="RoleName" class="text-danger"></span>
+            </div>
+            <div class="form-group pt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

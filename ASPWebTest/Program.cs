@@ -10,6 +10,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
 
 builder.Services.AddScoped<MenuService, MenuService>();
+builder.Services.AddScoped<RoleService, RoleService>();
 builder.Services.AddScoped<LoginService, LoginService>();
 builder.Services.AddScoped<OfficeService, OfficeService>();
 builder.Services.AddControllersWithViews();

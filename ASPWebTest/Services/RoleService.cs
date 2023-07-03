@@ -1,46 +1,46 @@
 ﻿using ASPWebTest.Models;
-using ASPWebTest.ViewModels;
 using System.Transactions;
 
 namespace ASPWebTest.Services
 {
-    public class OfficeService : BaseService
+    public class RoleService : BaseService
     {
         private readonly ApplicationDbContext db;
-        public OfficeService(ApplicationDbContext db) { 
-            this.db = db; 
+        public RoleService(ApplicationDbContext db)
+        {
+            this.db = db;
         }
 
-        public List<Office> GetAll(string searchText = null)
+        public List<Role> GetAll(string searchText = null)
         {
-            IQueryable<Office> query = db.Offices.AsQueryable();
+            IQueryable<Role> query = db.Roles.AsQueryable();
             if (!string.IsNullOrEmpty(searchText))
             {
-                query = query.Where(x => x.OfficeCode.Contains(searchText)
-                || x.OfficeName.Contains(searchText)
+                query = query.Where(x => x.RoleName.Contains(searchText)
+                || x.RoleName.Contains(searchText)
                 );
             }
 
             return query.ToList();
         }
-        public Office GetById(int id)
+        public Role GetById(int id)
         {
-            var query = db.Offices.Where(x => x.Id == id).FirstOrDefault();
+            var query = db.Roles.Where(x => x.Id == id).FirstOrDefault();
             if (query == null)
             {
-                return new Office();
+                return new Role();
             }
 
             return query;
         }
 
 
-        public int CekExist(Office model)
+        public int CekExist(Role model)
         {
-            IQueryable<Office> data = db.Offices.AsQueryable();
+            IQueryable<Role> data = db.Roles.AsQueryable();
             if (data.Any())
             {
-                data = data.Where(x => x.OfficeCode == model.OfficeCode);
+                data = data.Where(x => x.RoleName == model.RoleName);
             }
             else
             {
@@ -49,48 +49,7 @@ namespace ASPWebTest.Services
             return data.Count() == 0 ? 0 : 1;
         }
 
-        public async Task<OperationResult> Add(Office viewModel)
-        {
-            try 
-            {
-                using (var scope = new TransactionScope(
-                    TransactionScopeOption.Required,
-                    TimeSpan.FromMinutes(60),
-                    TransactionScopeAsyncFlowOption.Enabled
-                )) 
-                {
-                    var data = new Office()
-                    {
-                        OfficeCode = viewModel.OfficeCode,
-                        OfficeName = viewModel.OfficeName,
-                        Address1 = viewModel.Address1,
-                        Address2 = viewModel.Address2,
-
-                        City = viewModel.City,
-                        Phone = viewModel.Phone,
-                        Fax = viewModel.Fax,
-
-                        CreatedDate = DateTime.Now,
-                        CreatedUser = viewModel.CreatedUser,
-                    };
-                    db.Offices.Add(data);
-                    var success = await db.SaveChangesAsync() > 0;
-                    if (success)
-                    {
-                        scope.Complete();
-                        return OperationResult.Success();
-                    }
-
-                    return OperationResult.Failed(); 
-                }
-            }
-            catch(Exception ex) 
-            {
-                return OperationResult.Failed(ex.ToString());
-            }
-        }
-
-        public async Task<OperationResult> Update(Office viewModel)
+        public async Task<OperationResult> Add(Role viewModel)
         {
             try
             {
@@ -100,14 +59,44 @@ namespace ASPWebTest.Services
                     TransactionScopeAsyncFlowOption.Enabled
                 ))
                 {
-                    var data = db.Offices.Find(viewModel.Id);
-                    if(data != null)
+                    var data = new Role()
                     {
-                        data.Address1 = viewModel.Address1;
-                        data.Address2 = viewModel.Address2; 
-                        data.City = viewModel.City;
-                        data.Phone = viewModel.Phone;
-                        data.Fax = viewModel.Fax;
+                        RoleName = viewModel.RoleName,
+
+                        CreatedDate = DateTime.Now,
+                        CreatedUser = viewModel.CreatedUser,
+                    };
+                    db.Roles.Add(data);
+                    var success = await db.SaveChangesAsync() > 0;
+                    if (success)
+                    {
+                        scope.Complete();
+                        return OperationResult.Success();
+                    }
+
+                    return OperationResult.Failed();
+                }
+            }
+            catch (Exception ex)
+            {
+                return OperationResult.Failed(ex.ToString());
+            }
+        }
+
+        public async Task<OperationResult> Update(Role viewModel)
+        {
+            try
+            {
+                using (var scope = new TransactionScope(
+                    TransactionScopeOption.Required,
+                    TimeSpan.FromMinutes(60),
+                    TransactionScopeAsyncFlowOption.Enabled
+                ))
+                {
+                    var data = db.Roles.Find(viewModel.Id);
+                    if (data != null)
+                    {
+                        data.RoleName = viewModel.RoleName;
 
                         data.ModifiedDate = DateTime.Now;
                         data.ModifiedUser = viewModel.ModifiedUser;
@@ -138,10 +127,10 @@ namespace ASPWebTest.Services
                     TransactionScopeAsyncFlowOption.Enabled
                 ))
                 {
-                    var data = db.Offices.Find(id);
-                    if(data != null)
+                    var data = db.Roles.Find(id);
+                    if (data != null)
                     {
-                        db.Offices.Remove(data);
+                        db.Roles.Remove(data);
                         var success = await db.SaveChangesAsync() > 0;
                         if (success)
                         {
@@ -152,7 +141,7 @@ namespace ASPWebTest.Services
                     return OperationResult.Failed();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return OperationResult.Failed(ex.ToString());
             }

@@ -5,57 +5,49 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASPWebTest.Controllers
 {
-    public class OfficeController : BaseController
+    public class RoleController : BaseController
     {
-        private OfficeService officeService;
-        public OfficeController(ApplicationDbContext db,
-            OfficeService officeService) : base(db)
+        private RoleService roleService;
+        public RoleController(ApplicationDbContext db,
+            RoleService roleService) : base(db)
         {
-            this.officeService = officeService;
+            this.roleService = roleService;
         }
-
-
         public IActionResult Index(string SearchString = null)
         {
-            OfficeViewModel viewModel = new OfficeViewModel();
+            RoleViewModel viewModel = new RoleViewModel();
             viewModel.SearchText = SearchString;
-            viewModel.Offices = officeService.GetAll(SearchString);
+            viewModel.Roles = roleService.GetAll(SearchString);
             return View(viewModel);
         }
-        public IActionResult New() 
-        { 
+
+        public IActionResult New()
+        {
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> New(Office model) 
+        public async Task<ActionResult> New(Role model)
         {
             var success = false;
             var msg = "";
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
-                var isExist = officeService.CekExist(model);
-                if (isExist != 0)
+                var result = await roleService.Add(model);
+                if (result.Succeeded)
                 {
-                    msg = "Office Code already exist";
-                }
-                else
-                {
-                    var result = await officeService.Add(model);
-                    if (result.Succeeded) 
-                    {
-                        return RedirectToAction("Index");
-                    }
+                    return RedirectToAction("Index");
                 }
             }
 
             ViewBag.Message = msg;
             return View(model);
         }
+
         public IActionResult Edit(int Id)
         {
-            Office model = officeService.GetById(Id);
-            if(model == null)
+            Role model = roleService.GetById(Id);
+            if (model == null)
             {
                 return RedirectToAction("Index");
             }
@@ -63,7 +55,7 @@ namespace ASPWebTest.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(Office model)
+        public async Task<ActionResult> Edit(Role model)
         {
             var success = false;
             var msg = "";
@@ -71,7 +63,7 @@ namespace ASPWebTest.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await officeService.Update(model);
+                    var result = await roleService.Update(model);
                     if (result.Succeeded)
                     {
                         return RedirectToAction("Index");
@@ -90,13 +82,12 @@ namespace ASPWebTest.Controllers
             var msg = "";
             if (ModelState.IsValid)
             {
-                var result = await officeService.Delete(Id);
+                var result = await roleService.Delete(Id);
 
             }
 
             ViewBag.Message = msg;
             return RedirectToAction("Index");
         }
-
     }
 }
