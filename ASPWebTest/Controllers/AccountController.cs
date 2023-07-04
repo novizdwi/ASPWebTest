@@ -13,13 +13,16 @@ namespace ASPWebTest.Controllers
     {
         private LoginService loginService;
         private RoleService roleService;
+        private UserAccountService userAccountService;
         public AccountController(ApplicationDbContext db,
             LoginService loginService, 
-            RoleService roleService
+            RoleService roleService,
+            UserAccountService userAccountService
             ) : base(db)
         {
             this.loginService = loginService;
             this.roleService = roleService;
+            this.userAccountService = userAccountService;
         }
         public IActionResult Index()
         {
@@ -126,21 +129,24 @@ namespace ASPWebTest.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Menu(LoginViewModel viewModel)
+        public async Task<ActionResult> Menu(List<MenuRegisterViewModel> item)
         {
+
             var success = false;
             var msg = "";
+            int userId = string.IsNullOrEmpty(GetLoggedUser())? 0: Convert.ToInt32(GetLoggedUser());
+
             if (ModelState.IsValid)
             {
-                var result = await loginService.Login(viewModel);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
-                ViewBag.Message = result.errors;
+                //var result = await userAccountService.RegisterMenu(userId, viewModel);
+                //if (result.Succeeded)
+                //{
+                //    return RedirectToAction("Index");
+                //}
+                //ViewBag.Message = result.errors;
 
             }
-            return View(viewModel);
+            return View(item);
         }
         public async Task<IActionResult> LogOut()
         {

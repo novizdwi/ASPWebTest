@@ -15,7 +15,7 @@ builder.Services.AddScoped<RoleService, RoleService>();
 builder.Services.AddScoped<LoginService, LoginService>();
 builder.Services.AddScoped<OfficeService, OfficeService>();
 builder.Services.AddScoped<UserAccountService, UserAccountService>();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(x => x.LoginPath = "/");
 var app = builder.Build();

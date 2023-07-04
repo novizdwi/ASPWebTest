@@ -118,7 +118,11 @@ namespace ASPWebTest.Services
                        select new MenuRegisterViewModel()
                        {
                            MenuId= T0.Id,
-                           MenuName = T0.MenuName,
+                           MenuName = T0.Description,
+                           CanCreate = false,
+                           CanRead = false,
+                           CanUpdate= false,
+                           CanDelete= false,
 
                        });
             return ret.ToList();

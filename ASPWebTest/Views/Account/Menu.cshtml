@@ -1,8 +1,10 @@
 ﻿@model List<ASPWebTest.ViewModels.MenuRegisterViewModel>
+
 @{
     ViewData["Title"] = "Menu Register";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<h1>@ViewData["Title"]</h1>
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
         <span class="text-danger mb-3">
@@ -12,7 +14,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form action="Menu" method="POST" role="form" class="form-horizontal">
+        <form action="Menu" method="post" Id="formRegister" role="form" class="form-horizontal" data-ajax="true">
             <div class="form-group pt-3">
                 <table class="table">
                     <thead>
@@ -25,24 +27,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @for (int i = 0; i < Model.Count; i++)
                         {
                             <tr>
                                 <td>
-                                    @Html.HiddenFor(modelItem => item.MenuName)
-                                    @Html.DisplayFor(modelItem => item.MenuName)
+                                    @Html.HiddenFor(model => model[i].MenuId)
+                                    @Html.HiddenFor(model => model[i].MenuName)
+                                    @Model[i].MenuName;
                                 </td>
                                 <td>
-                                    @Html.CheckBoxFor(modelItem => item.CanRead)
+                                    @Html.CheckBoxFor(model => model[i].CanRead)
                                 </td>
                                 <td>
-                                    @Html.CheckBoxFor(modelItem => item.CanCreate)
+                                    @Html.CheckBoxFor(model => model[i].CanCreate)
                                 </td>
                                 <td>
-                                    @Html.CheckBoxFor(modelItem => item.CanUpdate)
+                                    @Html.CheckBoxFor(model => model[i].CanUpdate)
                                 </td>
                                 <td>
-                                    @Html.CheckBoxFor(modelItem => item.CanDelete)
+                                    @Html.CheckBoxFor(model => model[i].CanDelete)
                                 </td>
                             </tr>
                         }
@@ -50,8 +53,37 @@
                 </table>
             </div>
             <div class="form-group pt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" Id="btnClick" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        //function GetFormData()
+        //{
+        //    var data = $('#formRegister').serializeArray();
+
+        //}
+
+
+        //$("#btnClick").click(function (e) {
+        //    e.preventDefault();
+        //    var data = $('#formRegister').serializeArray();
+        //    //var data = $('#formRegister').serialize();
+        //    console.log('f: ', data);
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Account/Menu",
+        //        data: data,
+        //        dataType: "json",
+        //        success: function () {
+        //            alert('Success')
+        //        }
+        //    });
+        //});
+    </script>
+}

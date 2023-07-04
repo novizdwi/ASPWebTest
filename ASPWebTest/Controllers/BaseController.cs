@@ -13,7 +13,11 @@ namespace ASPWebTest.Controllers
             this.db = db;
         }
         protected string GetLoggedUser() {
-            return ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name).Value;
+            var query = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name);
+            string ret = "";
+            if (query != null)
+                ret = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name).Value;
+            return ret;
         }
 
         protected List<object> GetModelStateError()

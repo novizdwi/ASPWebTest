@@ -1,0 +1,12 @@
+﻿
+
+@{
+    ViewData["Title"] = "Setting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <span class="text-danger mb-3">
+        @Html.Raw(ViewBag.Message)
+    </span>
+}
