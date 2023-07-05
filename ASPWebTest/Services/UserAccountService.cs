@@ -12,6 +12,26 @@ namespace ASPWebTest.Services
             this.db = db;
         }
 
+        public UsersViewModel GetByAccountId(int accountId)
+        {
+            var ret = (from T0 in db.UserAccounts.Where(x => x.AccountId == accountId)
+                       select new UsersViewModel()
+                       {
+                           AccountId = accountId,
+                           FirstName = T0.FirstName,
+                           MidleName = T0.MidleName,
+                           LastName = T0.LastName,
+                           Email = T0.Email,
+                           Address1 = T0.Address1,
+                           Address2 = T0.Address2,
+                           City = T0.City,
+                           OfficeId = T0.OfficeId,
+
+                       }
+                       ).FirstOrDefault();
+            return ret;
+        }
+
         public List<UserAccount> GetAll(string searchText = null)
         {
             IQueryable<UserAccount> query = db.UserAccounts.AsQueryable();

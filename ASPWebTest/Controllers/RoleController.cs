@@ -28,6 +28,9 @@ namespace ASPWebTest.Controllers
 
             RoleViewModel viewModel = new RoleViewModel();
             viewModel.SearchText = SearchString;
+            viewModel.CanCreate = menuService.CheckAuthorize(userId, "Role", "Create");
+            viewModel.CanUpdate = menuService.CheckAuthorize(userId, "Role", "Update");
+            viewModel.CanDelete = menuService.CheckAuthorize(userId, "Role", "Delete");
             viewModel.Roles = roleService.GetAll(SearchString);
             return View(viewModel);
         }

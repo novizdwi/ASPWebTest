@@ -31,6 +31,9 @@ namespace ASPWebTest.Controllers
 
             OfficeViewModel viewModel = new OfficeViewModel();
             viewModel.SearchText = SearchString;
+            viewModel.CanCreate = menuService.CheckAuthorize(userId, "Office", "Create");
+            viewModel.CanUpdate = menuService.CheckAuthorize(userId, "Office", "Update");
+            viewModel.CanDelete = menuService.CheckAuthorize(userId, "Office", "Delete");
             viewModel.Offices = officeService.GetAll(SearchString);
             return View(viewModel);
         }

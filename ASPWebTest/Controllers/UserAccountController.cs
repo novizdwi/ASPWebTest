@@ -3,6 +3,8 @@ using ASPWebTest.Services;
 using ASPWebTest.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using System.Reflection;
 
 namespace ASPWebTest.Controllers
 {
@@ -32,6 +34,9 @@ namespace ASPWebTest.Controllers
 
             UserAccountViewModel viewModel = new UserAccountViewModel();
             viewModel.SearchText = SearchString;
+            viewModel.CanCreate = menuService.CheckAuthorize(userId, "UserAccount", "Create");
+            viewModel.CanUpdate = menuService.CheckAuthorize(userId, "UserAccount", "Update");
+            viewModel.CanDelete = menuService.CheckAuthorize(userId, "UserAccount", "Delete");
             viewModel.Users = userAccountService.GetUsersViewModel(SearchString);
             viewModel.Offices = officeService.GetAll();
             return View(viewModel);
@@ -64,7 +69,6 @@ namespace ASPWebTest.Controllers
             ViewBag.Message = msg;
             return View(model);
         }
-
         public IActionResult Edit(int Id)
         {
             int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());

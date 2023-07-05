@@ -1,5 +1,7 @@
 ﻿using ASPWebTest.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
 using System.Security.Principal;
 
@@ -12,6 +14,7 @@ namespace ASPWebTest.Controllers
         public BaseController(ApplicationDbContext db) {
             this.db = db;
         }
+
         protected string GetLoggedUser() {
             var query = ((ClaimsIdentity)User.Identity).FindFirst(ClaimTypes.Name);
             string ret = "";
@@ -32,5 +35,14 @@ namespace ASPWebTest.Controllers
             return data.ToList<object>();
         }
 
+        public override void OnActionExecuting(ActionExecutingContext filterContext) {
+            var action = filterContext?.ActionDescriptor as ControllerActionDescriptor;
+            if (action != null)
+            {
+                var actionName = action.ActionName;
+                var ctrlName = action.ControllerName;
+            }
+
+        }
     }
 }
