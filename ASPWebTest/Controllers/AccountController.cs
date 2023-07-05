@@ -13,21 +13,27 @@ namespace ASPWebTest.Controllers
     {
         private LoginService loginService;
         private RoleService roleService;
-        private UserAccountService userAccountService;
+        private MenuService menuService;
         public AccountController(ApplicationDbContext db,
             LoginService loginService, 
             RoleService roleService,
-            UserAccountService userAccountService
+            MenuService menuService
             ) : base(db)
         {
             this.loginService = loginService;
             this.roleService = roleService;
-            this.userAccountService = userAccountService;
+            this.menuService = menuService;
         }
         public IActionResult Index()
         {
             return View();
         }
+        public IActionResult Setting(string SearchString = null)
+        {
+
+            return View();
+        }
+
         public IActionResult Login()
         {
             return View();
@@ -124,7 +130,8 @@ namespace ASPWebTest.Controllers
 
         public IActionResult Menu()
         {
-            var viewModel = loginService.GetMenuRegister();
+            int userId = GetLoggedUser() == null? 0 : Convert.ToInt32(GetLoggedUser());
+            var viewModel = menuService.GetMenuRegister(userId);
             return View(viewModel);
         }
 
@@ -138,12 +145,12 @@ namespace ASPWebTest.Controllers
 
             if (ModelState.IsValid)
             {
-                //var result = await userAccountService.RegisterMenu(userId, viewModel);
-                //if (result.Succeeded)
-                //{
-                //    return RedirectToAction("Index");
-                //}
-                //ViewBag.Message = result.errors;
+                var result = await menuService.RegisterMenu(userId, item);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Setting");
+                }
+                ViewBag.Message = result.errors;
 
             }
             return View(item);

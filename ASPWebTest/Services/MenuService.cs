@@ -1,6 +1,7 @@
 ﻿using ASPWebTest.Models;
 using ASPWebTest.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
 namespace ASPWebTest.Services
 {
@@ -38,5 +39,119 @@ namespace ASPWebTest.Services
                        });
             return await ret.ToListAsync();
         }
+
+        public List<MenuRegisterViewModel> GetMenuRegister(int userId = 0)
+        {
+
+            if (userId == 0) {
+                return (from T0 in db.Menus
+                        select new MenuRegisterViewModel()
+                        {
+                            MenuId = T0.Id,
+                            MenuName = T0.Description,
+                            CanCreate = false,
+                            CanRead = false,
+                            CanUpdate = false,
+                            CanDelete = false,
+                        }).ToList();
+            }
+            else { 
+                return (from T0 in db.MenuAuths.Where(x=> x.UserId == userId)
+                        join T1 in db.Menus on T0.MenuId equals T1.Id
+                    select new MenuRegisterViewModel()
+                    {
+                        MenuId = T0.Id,
+                        MenuName = T1.Description,
+                        CanCreate = T0.CanCreate??false,
+                        CanRead = T0.CanRead ?? false,
+                        CanUpdate = T0.CanEdit ?? false,
+                        CanDelete = T0.CanDelete ?? false,
+                    }).ToList();
+
+            }
+        }
+
+        public async Task<OperationResult> RegisterMenu(int userId, List<MenuRegisterViewModel> viewModel)
+        {
+            if(userId == 0)
+            {
+                return OperationResult.Failed("No User Login ");
+            }
+
+            try
+            {
+                using (var scope = new TransactionScope(
+                TransactionScopeOption.Required,
+                TimeSpan.FromMinutes(60),
+                TransactionScopeAsyncFlowOption.Enabled
+                )) 
+                {
+                    foreach(var vm in viewModel)
+                    {
+                        var menuId = db.MenuAuths.Where(x => x.UserId == userId && x.MenuId == vm.MenuId).Select(x=> x.Id).FirstOrDefault();
+                        if(menuId == null) {
+                            AddMenu(userId, vm);
+                        } else {
+                            UpdateMenu(userId, vm);
+                        }
+
+                    }
+                    scope.Complete();
+                    return OperationResult.Success();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return OperationResult.Failed(ex.ToString());
+            }
+        }
+        public void AddMenu(int userId, MenuRegisterViewModel viewModel) {
+            try
+            {
+                var data = new MenuAuth()
+                {
+                    UserId = userId,
+                    MenuId = viewModel.MenuId,
+                    CanCreate = viewModel.CanCreate,
+                    CanRead = viewModel.CanRead,
+                    CanDelete = viewModel.CanDelete,
+                    CanEdit = viewModel.CanUpdate,
+
+                    CreatedDate = DateTime.Now,
+                    CreatedUser = userId,
+                };
+                db.MenuAuths.Add(data);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+        }
+        public void UpdateMenu(int userId, MenuRegisterViewModel vm) {
+            try {
+                var data = db.MenuAuths.Find(vm.MenuId);
+                if (data != null)
+                {
+                    data.CanCreate = vm.CanCreate;
+                    data.CanRead = vm.CanRead;
+                    data.CanDelete = vm.CanDelete;
+                    data.CanEdit = vm.CanUpdate;
+
+                    data.ModifiedDate = DateTime.Now;
+                    data.ModifiedUser = userId;
+                    db.SaveChanges();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
+
     }
 }
