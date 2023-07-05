@@ -1,6 +1,7 @@
 ﻿using ASPWebTest.Models;
 using ASPWebTest.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Text;
 using System.Transactions;
 
 namespace ASPWebTest.Services
@@ -11,6 +12,33 @@ namespace ASPWebTest.Services
         private ApplicationDbContext db;
         public MenuService(ApplicationDbContext db) {
             this.db = db;
+        }
+
+        public bool CheckAuthorize(int userId, string menuName, string accessType) { 
+            bool ret = false;
+            if(userId !=0 && !string.IsNullOrEmpty(menuName) && !string.IsNullOrEmpty(accessType))
+            {
+                var query = (from T0 in db.MenuAuths.Where(x=> x.UserId == userId) 
+                             join T1 in db.Menus on T0.MenuId equals T1.Id
+                             where T1.MenuName == menuName
+                             select new MenuRegisterViewModel() {
+                                MenuId = T0.MenuId,
+                                MenuName = T1.Description,
+                                CanRead = T0.CanRead??false,
+                                CanCreate = T0.CanCreate??false,
+                                CanUpdate = T0.CanEdit??false,
+                                CanDelete = T0.CanDelete??false,
+                             }).FirstOrDefault();
+                if (query != null)
+                {
+                    if (accessType == "Create") ret = query.CanCreate;
+                    if (accessType == "Read") ret = query.CanRead;
+                    if(accessType == "Update") ret = query.CanUpdate;
+                    if (accessType == "Delete") ret = query.CanDelete;
+                }
+            }
+
+            return ret;
         }
 
         public bool GetMenu(int userId, string MenuName, string Method) {
@@ -55,7 +83,22 @@ namespace ASPWebTest.Services
                             CanDelete = false,
                         }).ToList();
             }
-            else { 
+            else {
+                var countMenus = db.MenuAuths.Where(x => x.UserId == userId).Count();
+                if(countMenus == 0)
+                {
+                    return (from T0 in db.Menus
+                            select new MenuRegisterViewModel()
+                            {
+                                MenuId = T0.Id,
+                                MenuName = T0.Description,
+                                CanCreate = false,
+                                CanRead = false,
+                                CanUpdate = false,
+                                CanDelete = false,
+                            }).ToList();
+                }
+
                 return (from T0 in db.MenuAuths.Where(x=> x.UserId == userId)
                         join T1 in db.Menus on T0.MenuId equals T1.Id
                     select new MenuRegisterViewModel()

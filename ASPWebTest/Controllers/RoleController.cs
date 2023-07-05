@@ -10,13 +10,22 @@ namespace ASPWebTest.Controllers
     public class RoleController : BaseController
     {
         private RoleService roleService;
+        private MenuService menuService;
         public RoleController(ApplicationDbContext db,
-            RoleService roleService) : base(db)
+            RoleService roleService,
+            MenuService menuService) : base(db)
         {
             this.roleService = roleService;
+            this.menuService = menuService;
         }
         public IActionResult Index(string SearchString = null)
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "Role", "Read"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             RoleViewModel viewModel = new RoleViewModel();
             viewModel.SearchText = SearchString;
             viewModel.Roles = roleService.GetAll(SearchString);
@@ -25,6 +34,12 @@ namespace ASPWebTest.Controllers
 
         public IActionResult New()
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "Role", "Create"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -48,6 +63,12 @@ namespace ASPWebTest.Controllers
 
         public IActionResult Edit(int Id)
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "Role", "Update"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             Role model = roleService.GetById(Id);
             if (model == null)
             {
@@ -80,6 +101,12 @@ namespace ASPWebTest.Controllers
 
         public async Task<ActionResult> Delete(int Id)
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "Role", "Delete"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var success = false;
             var msg = "";
             if (ModelState.IsValid)

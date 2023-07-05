@@ -11,23 +11,37 @@ namespace ASPWebTest.Controllers
     public class OfficeController : BaseController
     {
         private OfficeService officeService;
+        private MenuService menuService;
         public OfficeController(ApplicationDbContext db,
-            OfficeService officeService) : base(db)
+            OfficeService officeService,
+            MenuService menuService) : base(db)
         {
             this.officeService = officeService;
+            this.menuService = menuService;
         }
 
 
         public IActionResult Index(string SearchString = null)
         {
-            
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if(!menuService.CheckAuthorize(userId, "Office", "Read"))
+            {
+                return RedirectToAction("Index","Home");
+            }
+
             OfficeViewModel viewModel = new OfficeViewModel();
             viewModel.SearchText = SearchString;
             viewModel.Offices = officeService.GetAll(SearchString);
             return View(viewModel);
         }
         public IActionResult New() 
-        { 
+        {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "Office", "Create"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -58,6 +72,12 @@ namespace ASPWebTest.Controllers
         }
         public IActionResult Edit(int Id)
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "Office", "Update"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             Office model = officeService.GetById(Id);
             if(model == null)
             {
@@ -90,6 +110,12 @@ namespace ASPWebTest.Controllers
 
         public async Task<ActionResult> Delete(int Id)
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "Office", "Delete"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var success = false;
             var msg = "";
             if (ModelState.IsValid)

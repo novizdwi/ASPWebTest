@@ -11,15 +11,25 @@ namespace ASPWebTest.Controllers
     {
         private UserAccountService userAccountService;
         private OfficeService officeService;
+        private MenuService menuService;
+
         public UserAccountController(ApplicationDbContext db,
             UserAccountService userAccountService,
-            OfficeService officeService) : base(db)
+            OfficeService officeService,
+            MenuService menuService) : base(db)
         {
             this.userAccountService = userAccountService;
             this.officeService = officeService;
+            this.menuService = menuService;
         }
         public IActionResult Index(string SearchString = null)
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "UserAccount", "Read"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             UserAccountViewModel viewModel = new UserAccountViewModel();
             viewModel.SearchText = SearchString;
             viewModel.Users = userAccountService.GetUsersViewModel(SearchString);
@@ -28,6 +38,12 @@ namespace ASPWebTest.Controllers
         }
         public IActionResult New()
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "UserAccount", "Create"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -51,6 +67,12 @@ namespace ASPWebTest.Controllers
 
         public IActionResult Edit(int Id)
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "UserAccount", "Update"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             UserAccount model = userAccountService.GetById(Id);
             if (model == null)
             {
@@ -83,6 +105,12 @@ namespace ASPWebTest.Controllers
 
         public async Task<ActionResult> Delete(int Id)
         {
+            int userId = GetLoggedUser() == null ? 0 : Convert.ToInt32(GetLoggedUser());
+            if (!menuService.CheckAuthorize(userId, "UserAccount", "Delete"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var success = false;
             var msg = "";
             if (ModelState.IsValid)
