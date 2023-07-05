@@ -1,0 +1,78 @@
+﻿@model ASPWebTest.ViewModels.UsersViewModel
+
+@{
+    ViewData["Title"] = "New User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <span class="text-danger mb-3">
+        @Html.Raw(ViewBag.Message)
+    </span>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form action="New" method="POST" role="form" class="form-horizontal">
+            <input type="hidden" asp-for="AccountId" />
+
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MidleName" class="control-label"></label>
+                <input asp-for="MidleName" class="form-control" />
+                <span asp-validation-for="MidleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address1" class="control-label"></label>
+                <input asp-for="Address1" class="form-control" />
+                <span asp-validation-for="Address1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address2" class="control-label"></label>
+                <input asp-for="Address2" class="form-control" />
+                <span asp-validation-for="Address2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>            
+            
+            <div class="form-group">
+                <label asp-for="OfficeId" class="control-label"></label>
+                <select asp-for="OfficeId" asp-items="Model.Offices" class="form-control"></select>
+                <span asp-validation-for="OfficeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group pt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

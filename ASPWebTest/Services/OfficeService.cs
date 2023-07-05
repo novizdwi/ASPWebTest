@@ -1,5 +1,6 @@
 ﻿using ASPWebTest.Models;
 using ASPWebTest.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Transactions;
 
 namespace ASPWebTest.Services
@@ -7,8 +8,17 @@ namespace ASPWebTest.Services
     public class OfficeService : BaseService
     {
         private readonly ApplicationDbContext db;
-        public OfficeService(ApplicationDbContext db) { 
-            this.db = db; 
+        public OfficeService(ApplicationDbContext db) {
+            this.db = db;
+        }
+        public List<SelectListItem> GetAll(){
+            var ret = (from T0 in db.Offices
+                       select new SelectListItem()
+                       {
+                           Value = T0.Id.ToString(),
+                           Text = T0.OfficeCode+"  - "+ T0.OfficeName,
+                       });
+            return ret.ToList();
         }
 
         public List<Office> GetAll(string searchText = null)

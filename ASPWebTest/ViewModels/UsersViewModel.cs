@@ -1,6 +1,7 @@
 ﻿using ASPWebTest.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASPWebTest.ViewModels
 {
@@ -21,7 +22,9 @@ namespace ASPWebTest.ViewModels
         [DisplayName("Address")]
         public string? Address2 { get; set; }
         public string? City { get; set; }
+        [DisplayName("Office")]
         public int? OfficeId { get; set; }
         public string? OfficeName { get; set; }
+        public List<SelectListItem>? Offices { get; set; }
     }
 }

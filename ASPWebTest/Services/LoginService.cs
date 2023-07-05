@@ -55,6 +55,7 @@ namespace ASPWebTest.Services
                         var userAccount = new UserAccount()
                         {
                             AccountId = account.Id,
+                            IsActive = true,
                             CreatedDate = DateTime.Now,
                             CreatedUser = account.Id,
                         };

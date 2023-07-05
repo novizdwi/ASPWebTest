@@ -10,6 +10,5 @@ namespace ASPWebTest.ViewModels
         public bool CanDelete { get; set; } = false;
 
         public List<UsersViewModel> Users { get; set; }
-        public List<Office> Offices { get; set; }
     }
 }

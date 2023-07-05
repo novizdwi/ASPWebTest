@@ -14,10 +14,29 @@ namespace ASPWebTest.Services
 
         public UsersViewModel GetByAccountId(int accountId)
         {
-            var ret = (from T0 in db.UserAccounts.Where(x => x.AccountId == accountId)
+            var ret = (from T0 in db.UserAccounts.Where(x => x.AccountId == accountId && x.IsActive == true)
                        select new UsersViewModel()
                        {
                            AccountId = accountId,
+                           FirstName = T0.FirstName,
+                           MidleName = T0.MidleName,
+                           LastName = T0.LastName,
+                           Email = T0.Email,
+                           Address1 = T0.Address1,
+                           Address2 = T0.Address2,
+                           City = T0.City,
+                           OfficeId = T0.OfficeId,
+
+                       }
+                       ).FirstOrDefault();
+            return ret;
+        }
+        public UsersViewModel GetById(int id)
+        {
+            var ret = (from T0 in db.UserAccounts.Where(x => x.Id == id && x.IsActive == true)
+                       select new UsersViewModel()
+                       {
+                           AccountId = T0.AccountId,
                            FirstName = T0.FirstName,
                            MidleName = T0.MidleName,
                            LastName = T0.LastName,
@@ -53,7 +72,7 @@ namespace ASPWebTest.Services
         public List<UsersViewModel> GetUsersViewModel(string searchText = null)
         {
             //IQueryable<UserAccount> query = db.UserAccounts.AsQueryable();
-            var query = (from T0 in db.UserAccounts
+            var query = (from T0 in db.UserAccounts.Where(x => x.IsActive == true)
                          join T1 in db.Offices on T0.OfficeId equals T1.Id
                          select new UsersViewModel()
                          {
@@ -84,19 +103,9 @@ namespace ASPWebTest.Services
 
             return query.ToList();
         }
-        public UserAccount GetById(int id)
-        {
-            var query = db.UserAccounts.Where(x => x.Id == id).FirstOrDefault();
-            if (query == null)
-            {
-                return new UserAccount();
-            }
-
-            return query;
-        }
 
 
-        public async Task<OperationResult> Add(UserAccount viewModel)
+        public async Task<OperationResult> Add(UsersViewModel viewModel)
         {
             try
             {
@@ -117,6 +126,7 @@ namespace ASPWebTest.Services
                         City = viewModel.City,
                         Email = viewModel.Email,
                         OfficeId = viewModel.OfficeId,
+                        IsActive = true,
 
                         CreatedDate = DateTime.Now,
                         CreatedUser = viewModel.CreatedUser,
@@ -138,7 +148,7 @@ namespace ASPWebTest.Services
             }
         }
 
-        public async Task<OperationResult> Update(UserAccount viewModel)
+        public async Task<OperationResult> Update(UsersViewModel viewModel)
         {
             try
             {
@@ -193,7 +203,13 @@ namespace ASPWebTest.Services
                     var data = db.UserAccounts.Find(id);
                     if (data != null)
                     {
-                        db.UserAccounts.Remove(data);
+                        if (data.AccountId != null)
+                        {
+                            data.IsActive = false;
+                        }
+                        else { 
+                            db.UserAccounts.Remove(data);
+                        }
                         var success = await db.SaveChangesAsync() > 0;
                         if (success)
                         {

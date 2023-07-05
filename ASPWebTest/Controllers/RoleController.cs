@@ -77,7 +77,7 @@ namespace ASPWebTest.Controllers
             {
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(model);
         }
 
         [HttpPost]

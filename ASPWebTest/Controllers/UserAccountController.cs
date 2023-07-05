@@ -38,7 +38,6 @@ namespace ASPWebTest.Controllers
             viewModel.CanUpdate = menuService.CheckAuthorize(userId, "UserAccount", "Update");
             viewModel.CanDelete = menuService.CheckAuthorize(userId, "UserAccount", "Delete");
             viewModel.Users = userAccountService.GetUsersViewModel(SearchString);
-            viewModel.Offices = officeService.GetAll();
             return View(viewModel);
         }
         public IActionResult New()
@@ -48,12 +47,14 @@ namespace ASPWebTest.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            UsersViewModel viewModel = new UsersViewModel();
+            viewModel.Offices = officeService.GetAll();
 
-            return View();
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<ActionResult> New(UserAccount model)
+        public async Task<ActionResult> New(UsersViewModel model)
         {
             var success = false;
             var msg = "";
@@ -77,16 +78,17 @@ namespace ASPWebTest.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            UserAccount model = userAccountService.GetById(Id);
-            if (model == null)
+            UsersViewModel viewModel = userAccountService.GetById(Id);
+            if (viewModel == null)
             {
                 return RedirectToAction("Index");
             }
-            return View();
+            viewModel.Offices = officeService.GetAll();
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(UserAccount model)
+        public async Task<ActionResult> Edit(UsersViewModel model)
         {
             var success = false;
             var msg = "";

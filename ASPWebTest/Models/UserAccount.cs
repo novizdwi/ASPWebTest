@@ -24,6 +24,7 @@ namespace ASPWebTest.Models
         public string? Address2 { get; set; }
         public string? City { get; set; }
         public int? OfficeId { get; set; }
+        public bool? IsActive { get; set; }
 
     }
 }
